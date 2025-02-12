@@ -1,20 +1,13 @@
 import AWS from "aws-sdk";
 
+AWS.config.update({
+  accessKeyId: `${process.env.AWS_ACCESS_KEY_ID}`,
+  secretAccessKey: `${process.env.AWS_SECRET_ACCESS_KEY}`,
+});
+
 export default class ProductsRepo {
   constructor() {
     this.lambda = new AWS.Lambda({ region: "us-east-1" });
-  }
-
-  async getProducts() {
-    const params = {
-      FunctionName: "http-crud-tutorial-function",
-      InvocationType: "RequestResponse",
-    };
-
-    const response = await this.lambda.invoke(params).promise();
-    const products = JSON.parse(response.Payload);
-
-    return products;
   }
 
   async createProduct(product) {
@@ -28,15 +21,27 @@ export default class ProductsRepo {
         stock_quantity: product.stock_quantity,
       }),
     };
+    const response = await this.lambda.invoke(params).promise();
+    
+    return JSON.parse(response.Payload);
+  }
+
+  async getProducts() {
+    const params = {
+      FunctionName: "Read_Product_Prisma",
+      InvocationType: "RequestResponse",
+    };
 
     const response = await this.lambda.invoke(params).promise();
+    
+    const products = JSON.parse(response.Payload);
 
-    return JSON.parse(response.Payload);
+    return products;
   }
 
   async updateProduct(product) {
     const params = {
-      FunctionName: "update_product_CRUD",
+      FunctionName: "update_product_prisma",
       InvocationType: "RequestResponse",
       Payload: JSON.stringify(Object.fromEntries(Object.entries(product))),
     };
@@ -48,7 +53,7 @@ export default class ProductsRepo {
 
   async deleteProduct(productID) {
     const params = {
-      FunctionName: "Delete_CRUD",
+      FunctionName: "delete_product_prisma",
       InvocationType: "RequestResponse",
       Payload: JSON.stringify(productID),
     };

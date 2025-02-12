@@ -1,5 +1,5 @@
 {
-  "name": "--experimental-app",
+  "name": "prisma-aws",
   "version": "0.1.0",
   "private": true,
   "scripts": {

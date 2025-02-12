@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-// import ProductsRepo from "../controller/product-repo";
-// const repo = new ProductsRepo();
-import AWS from "aws-sdk";
+import ProductsRepo from "../controller/product-repo";
+const repo = new ProductsRepo();
 
 function App() {
   const [name, setName] = useState("");
@@ -32,12 +31,10 @@ function App() {
 
       const response = await repo.createProduct(newProduct);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.body.success) {
         alert("Product created successfully!");
       } else {
-        alert("Error creating product: " + data.error);
+        alert("Error creating product: " + response.body);
       }
     } catch (err) {
       setError("An error occurred: " + err.message);
